@@ -17,9 +17,9 @@ The method is based on the following paper:
 >   
 
 ## Example
-Assume we have a game with 2 agents who have 3 actions each. Then we first create the game structure:
+Assume we have a game with 2 agents who have 2 actions each. Then we first create the game structure:
 ```python
-game = Game(n_actions=[4, 4], load_save=True)
+game = Game(n_actions=[2, 2], load_save=True)
 ```
 This create the response graph and linear mappings we need for the decomposition. For larger instances this might take a while. With the keyword `load_save` we allow to save these linear maps and load them, if they were saved before. You can also define a `path` that determines where the matrices are stored/loaded. <br>
 
