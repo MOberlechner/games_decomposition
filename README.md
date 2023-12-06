@@ -1,5 +1,21 @@
 # Decomposition of Finite Normal Form Games Based on Combinatorial Hodge Theory
 
+## Notes
+The implementation is based on
+> **Github repository** <br>
+>[candogan-games-decomposition](https://github.com/davidelegacci/candogan-games-decomposition) by [davidelegacci](https://github.com/davidelegacci).
+
+In this version, I made the following changes:
+- reduced the code to the decomposition only
+- improved runtime (by allowing the game structure to be saved/imported)
+- restructered the project such that it can be installed as a python package and reused in other projects
+
+The method is based on the following paper:
+> **Flows and Decompositions of Games: Harmonic and Potential Games** <br>
+> Ozan Candogan, Ishai Menache, Asuman Ozdaglar and Pablo A. Parril <br>
+> *Mathematics of Operations Research, 2011*, [[Link](https://www.jstor.org/stable/23012338)]
+>   
+
 ## Example
 Assume we have a game with 2 agents who have 3 actions each. Then we first create the game structure:
 ```python
@@ -31,6 +47,7 @@ game.payoff_matrices_N # payoff matrices for nonstrategic component
 We also compute a metric, which denotes the potentialness of a game and which is defined by 
 
 $$ \text{Potentialness} = \dfrac{\Vert uP \Vert_2}{\Vert uP \Vert_2 + \Vert uH \Vert_2} $$
+
 where $uP$ and $uH$ are the payoff vectors of the potential and harmonic components. In the code you can access the metric by
 
 ```python
@@ -40,26 +57,7 @@ Using the components of the potential and the harmonic components, we can constr
 ```python
 new_payoff_matrices = game.create_game_potentialness(potentialness=0.5)
 ```
-You can find this example also in the [notebooks](./notebooks/).
-
-
-
-
-
-## Notes on this Project
-The implementation is based on the repo
->[candogan-games-decomposition](https://github.com/davidelegacci/candogan-games-decomposition) by [davidelegacci](https://github.com/davidelegacci).
-
-In this version, I made the following changes:
-- reduced the code to the decomposition only
-- improved runtime (by allowing the game structure to be saved/imported)
-- restructered the project such that it can be installed as a python package and reused in other projects
-
-The theoretical background is from
-> **Flows and Decompositions of Games: Harmonic and Potential Games** <br>
-> Ozan Candogan, Ishai Menache, Asuman Ozdaglar and Pablo A. Parril <br>
-> *Mathematics of Operations Research, 2011*, [[Link](https://www.jstor.org/stable/23012338)]
->   
+You can find this and additional examples also in the [notebooks](./notebooks/).
 
 ## Setup
 
