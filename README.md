@@ -40,9 +40,10 @@ game.compute_decomposition(payoff_vector)
 ```
 The result is saved in form of matrices
 ```python
-game.payoff_matrices_P # payoff matrices for potential component
-game.payoff_matrices_H # payoff matrices for harmonic component
-game.payoff_matrices_N # payoff matrices for nonstrategic component
+game.u  # payoff matrices for potential component
+game.uP # payoff matrices for potential component
+game.uH # payoff matrices for harmonic component
+game.uN # payoff matrices for nonstrategic component
 ```
 We also compute a metric, which denotes the potentialness of a game and which is defined by 
 
@@ -51,7 +52,7 @@ $$ \text{Potentialness} = \dfrac{\Vert uP \Vert_2}{\Vert uP \Vert_2 + \Vert uH \
 where $uP$ and $uH$ are the payoff vectors of the potential and harmonic components. In the code you can access the metric by
 
 ```python
-game.potentialness     # value of metric for potentialness
+game.metric     # value of metric for potentialness
 ```
 Using the components of the potential and the harmonic components, we can construct a new matrix game with a predefined potentialness by considering a respective convex combination of both components (if they are nonzero). This can be done in the following way
 ```python

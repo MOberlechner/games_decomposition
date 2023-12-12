@@ -205,7 +205,7 @@ class Structure:
             A[row][minus_column] = -1
             A[row][plus_column] = +1
 
-        return np.asmatrix(A)
+        return A
 
     def make_coboundary_0_matrix(self):
         """Matrix of d_0: C^0 --> C^1"""
