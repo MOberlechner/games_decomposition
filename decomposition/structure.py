@@ -80,15 +80,15 @@ class Structure:
 
         # create game (optional: save/load computed game)
         if save_load:
-            if self.game_exists():
-                self.load_game()
+            if self.structure_exists():
+                self.load_structure()
             else:
-                self.create_game()
-                self.save_game()
+                self.create_structure()
+                self.save_structure()
         else:
-            self.create_game()
+            self.create_structure()
 
-    def create_game(self):
+    def create_structure(self):
         # List of Player instances
         self.players = []
         for i in range(self.num_players):
@@ -250,19 +250,19 @@ class Structure:
         # create directory (if does not exist)
         os.makedirs(self.path, exist_ok=True)
 
-    def game_exists(self):
+    def structure_exists(self):
         """check if a game exists"""
         for matrix in self.relevant_matrices:
             if not os.path.exists(os.path.join(self.path, f"{matrix}.npy")):
                 return False
         return True
 
-    def save_game(self):
+    def save_structure(self):
         """Save relevant matrices of game"""
         for matrix in self.relevant_matrices:
             np.save(os.path.join(self.path, matrix), getattr(self, matrix))
 
-    def load_game(self):
+    def load_structure(self):
         """Load relevant matrices of saved game"""
         for matrix in self.relevant_matrices:
             try:
