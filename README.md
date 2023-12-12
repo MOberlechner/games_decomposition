@@ -40,7 +40,7 @@ game.compute_decomposition(payoff_vector)
 ```
 The result is saved in form of matrices
 ```python
-game.u  # payoff matrices for potential component
+game.u  # payoff matrices of game
 game.uP # payoff matrices for potential component
 game.uH # payoff matrices for harmonic component
 game.uN # payoff matrices for nonstrategic component
