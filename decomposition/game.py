@@ -29,8 +29,12 @@ class Game:
     def compute_decomposition_matrix(self, payoff_matrices: List[np.ndarray]):
         """compute Hodge decomposition given payoff matrices"""
         # test input
-        assert self.n_agents == len(payoff_matrices)
-        assert self.n_actions == list(payoff_matrices[0].shape)
+        assert self.n_agents == len(
+            payoff_matrices
+        ), "number of agents not equal to number of matrices"
+        assert self.n_actions == list(
+            payoff_matrices[0].shape
+        ), "dimension of payoff matrix does not fit n_actions"
 
         # decomposition
         payoff_vector = self.matrices_to_vector(payoff_matrices)
@@ -47,12 +51,12 @@ class Game:
         self.payoff = Payoff(self.structure, payoff_vector)
 
         # save results to matrix game:
-        self.payoff_matrices = self.vector_to_matrices(payoff_vector)
-        self.payoff_matrices_P = self.vector_to_matrices(self.payoff.uP)
-        self.payoff_matrices_H = self.vector_to_matrices(self.payoff.uH)
-        self.payoff_matrices_N = self.vector_to_matrices(self.payoff.uN)
-        self.potential = self.payoff.potential
-        self.potentialness = self.payoff.potentialness
+        self.u = self.vector_to_matrices(payoff_vector)
+        self.uP = self.vector_to_matrices(self.payoff.uP)
+        self.uH = self.vector_to_matrices(self.payoff.uH)
+        self.uN = self.vector_to_matrices(self.payoff.uN)
+        self.P = self.payoff.potential
+        self.metric = self.payoff.potentialness
         self.decomposition_computed = True
 
     def create_game_potentialness(potentialness: float) -> List[np.ndarray]:
@@ -86,8 +90,13 @@ class Game:
             List[np.ndarray]: list of (payoff) matrices
         """
         return [
-            vector[
-                agent * np.prod(self.n_actions) : (agent + 1) * np.prod(self.n_actions)
-            ]
+            np.reshape(
+                vector[
+                    agent
+                    * np.prod(self.n_actions) : (agent + 1)
+                    * np.prod(self.n_actions)
+                ],
+                self.n_actions,
+            )
             for agent in self.agents
         ]
