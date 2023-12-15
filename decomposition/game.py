@@ -59,7 +59,7 @@ class Game:
         self.metric = self.payoff.potentialness
         self.decomposition_computed = True
 
-    def create_game_potentialness(potentialness: float) -> List[np.ndarray]:
+    def create_game_potentialness(self, potentialness: float) -> List[np.ndarray]:
         """create a new game with given level of potentialness as convex combination of components uH and uP"""
         if not self.decomposition_computed:
             print("compute decomposition first!")
