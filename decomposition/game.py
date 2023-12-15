@@ -22,6 +22,7 @@ class Game:
         self.n_actions = n_actions
         self.actions = list(range(self.n_agents))
         self.structure = Structure(self.n_actions, save_load=save_load, path=path)
+        self.decomposition_computed = False
 
     def __repr__(self) -> str:
         return f"Game({self.n_actions})"
