@@ -245,7 +245,7 @@ class Structure:
         # set path
         if path is None:
             path = os.path.join(*os.getcwd())
-        self.path = os.path.join(path, "data/structure/", self.label_game)
+        self.path = os.path.join(path, "data_decomp/structure/", self.label_game)
 
         # create directory (if does not exist)
         os.makedirs(self.path, exist_ok=True)
