@@ -53,6 +53,7 @@ class Structure:
     def __init__(
         self,
         num_strategies_for_player: List[int],
+        flow_only: bool = False,
         save_load: bool = True,
         path: str = None,
     ):
@@ -67,16 +68,20 @@ class Structure:
         self.num_strategies_for_player = num_strategies_for_player
         self.num_players = len(num_strategies_for_player)
         self.set_path(save_load, path)
+        self.flow_only = flow_only
 
         # elements to save/load
-        self.relevant_matrices = [
-            "normalization_projection",
-            "exact_projection",
-            "pwc_matrix_pinv",
-            "pwc_matrix",
-            "coboundary_0_matrix",
-            "coboundary_0_matrix_pinv",
-        ]
+        if self.flow_only:
+            self.relevant_matrices = ["pwc_matrix"]
+        else:
+            self.relevant_matrices = [
+                "normalization_projection",
+                "exact_projection",
+                "pwc_matrix_pinv",
+                "pwc_matrix",
+                "coboundary_0_matrix",
+                "coboundary_0_matrix_pinv",
+            ]
 
         # create game (optional: save/load computed game)
         if save_load:
@@ -88,7 +93,13 @@ class Structure:
         else:
             self.create_structure()
 
-    def create_structure(self):
+    def create_structure(self, flow_only: bool = False):
+        """Create structure, i.e., matrices that depend only on the number of agents and actions,
+        and not on the payoffs
+
+        Args:
+            flow_only (bool, optional): For the flow decomposition we only need the pwc matrix. Defaults to False.
+        """
         # List of Player instances
         self.players = []
         for i in range(self.num_players):
@@ -119,24 +130,27 @@ class Structure:
         # PWC MATRIX C0N --> C1
         self.pwc_matrix = self.make_pwc_matrix()
 
-        # MATRIX coboundary 0 map: d_0: C^0 --> C^1
-        self.coboundary_0_matrix = self.make_coboundary_0_matrix()
+        if not flow_only:
+            # MATRIX coboundary 0 map: d_0: C^0 --> C^1
+            self.coboundary_0_matrix = self.make_coboundary_0_matrix()
 
-        # Moore-Penrose pseudo-inverse of pwc
-        self.pwc_matrix_pinv = npla.pinv(self.pwc_matrix)
+            # Moore-Penrose pseudo-inverse of pwc
+            self.pwc_matrix_pinv = npla.pinv(self.pwc_matrix)
 
-        # PI: C0N --> C0N projection onto Euclidean orthogonal complement of ker(δ_0^N)
-        self.normalization_projection = np.matmul(self.pwc_matrix_pinv, self.pwc_matrix)
+            # PI: C0N --> C0N projection onto Euclidean orthogonal complement of ker(δ_0^N)
+            self.normalization_projection = np.matmul(
+                self.pwc_matrix_pinv, self.pwc_matrix
+            )
 
-        # pinv(δ_0): C^1 --> C^0
-        self.coboundary_0_matrix_pinv = npla.pinv(self.coboundary_0_matrix)
+            # pinv(δ_0): C^1 --> C^0
+            self.coboundary_0_matrix_pinv = npla.pinv(self.coboundary_0_matrix)
 
-        # e: C1 --> C1 projection onto exact
-        self.exact_projection = np.matmul(
-            self.coboundary_0_matrix, self.coboundary_0_matrix_pinv
-        )
+            # e: C1 --> C1 projection onto exact
+            self.exact_projection = np.matmul(
+                self.coboundary_0_matrix, self.coboundary_0_matrix_pinv
+            )
 
-        self.potential = np.matmul(self.coboundary_0_matrix_pinv, self.pwc_matrix)
+            self.potential = np.matmul(self.coboundary_0_matrix_pinv, self.pwc_matrix)
 
     def get_payoff_basis(self):
         """create basis of (C^0)^N of cardinality AN, i.e. basis of vector space of payoffs
