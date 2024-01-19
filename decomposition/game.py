@@ -2,6 +2,7 @@ from typing import List
 
 import numpy as np
 
+from decomposition.flow import Flow
 from decomposition.payoff import Payoff
 from decomposition.structure import Structure
 
@@ -26,6 +27,8 @@ class Game:
 
     def __repr__(self) -> str:
         return f"Game({self.n_actions})"
+
+    # - - - - - - - - - - - - DECOMPOSITION PAYOFF - - - - - - - - - - - - #
 
     def compute_decomposition_matrix(self, payoff_matrices: List[np.ndarray]):
         """compute Hodge decomposition given payoff matrices"""
@@ -68,6 +71,36 @@ class Game:
         else:
             new_payoff = self.payoff.create_payoff_potentialness(potentialness)
             return self.vector_to_matrices(new_payoff)
+
+    # - - - - - - - - - - - - DECOMPOSITION FLOW - - - - - - - - - - - - #
+
+    def compute_flow_decomposition_matrix(self, payoff_matrices: List[np.ndarray]):
+        """Compute Hodge decomposition (only) in flow space given payoff vector"""
+        # test input
+        assert self.n_agents == len(
+            payoff_matrices
+        ), "number of agents not equal to number of matrices"
+        assert self.n_actions == list(
+            payoff_matrices[0].shape
+        ), "dimension of payoff matrix does not fit n_actions"
+
+        # decomposition
+        payoff_vector = self.matrices_to_vector(payoff_matrices)
+        self.compute_flow_decomposition(payoff_vector)
+
+    def compute_flow_decomposition(self, payoff_vector: List[float]):
+        """Compute Hodge decomposition (only) in flow space given payoff vector"""
+        # test input
+        assert len(payoff_vector) == self.n_agents * np.prod(
+            self.n_actions
+        ), f"expected {self.n_agents * np.prod(self.n_actions)} entries, found {len(payoff_vector)}"
+
+        # compute decomposition
+        self.flow = Flow(self.structure, payoff_vector)
+        self.Du, self.DuP, self.DuH = self.flow.Du, self.flow.DuP, self.flow.DuH
+        self.flow_metric = self.flow.potentialness
+
+    # - - - - - - - - - - - - HELPERFUNCTIONS - - - - - - - - - - - - #
 
     def matrices_to_vector(self, matrices: List[np.ndarray]) -> list:
         """transform given payoff matrices to payoff vector
