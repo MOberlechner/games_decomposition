@@ -72,13 +72,18 @@ class Structure:
 
         # elements to save/load
         if self.flow_only:
-            self.relevant_matrices = ["pwc_matrix"]
+            self.relevant_matrices = [
+                "pwc_matrix",
+                "exact_projection",
+                "coboundary_0_matrix",
+                "coboundary_0_matrix_pinv",
+            ]
         else:
             self.relevant_matrices = [
+                "pwc_matrix",
                 "normalization_projection",
                 "exact_projection",
                 "pwc_matrix_pinv",
-                "pwc_matrix",
                 "coboundary_0_matrix",
                 "coboundary_0_matrix_pinv",
             ]
@@ -130,24 +135,24 @@ class Structure:
         # PWC MATRIX C0N --> C1
         self.pwc_matrix = self.make_pwc_matrix()
 
-        if not flow_only:
-            # MATRIX coboundary 0 map: d_0: C^0 --> C^1
-            self.coboundary_0_matrix = self.make_coboundary_0_matrix()
+        # MATRIX coboundary 0 map: d_0: C^0 --> C^1
+        self.coboundary_0_matrix = self.make_coboundary_0_matrix()
 
+        # pinv(δ_0): C^1 --> C^0
+        self.coboundary_0_matrix_pinv = npla.pinv(self.coboundary_0_matrix)
+
+        # e: C1 --> C1 projection onto exact
+        self.exact_projection = np.matmul(
+            self.coboundary_0_matrix, self.coboundary_0_matrix_pinv
+        )
+
+        if not flow_only:
             # Moore-Penrose pseudo-inverse of pwc
             self.pwc_matrix_pinv = npla.pinv(self.pwc_matrix)
 
             # PI: C0N --> C0N projection onto Euclidean orthogonal complement of ker(δ_0^N)
             self.normalization_projection = np.matmul(
                 self.pwc_matrix_pinv, self.pwc_matrix
-            )
-
-            # pinv(δ_0): C^1 --> C^0
-            self.coboundary_0_matrix_pinv = npla.pinv(self.coboundary_0_matrix)
-
-            # e: C1 --> C1 projection onto exact
-            self.exact_projection = np.matmul(
-                self.coboundary_0_matrix, self.coboundary_0_matrix_pinv
             )
 
             self.potential = np.matmul(self.coboundary_0_matrix_pinv, self.pwc_matrix)
