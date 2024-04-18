@@ -10,19 +10,30 @@ from decomposition.structure import Structure
 class Game:
     """Class that handles payoff matrices and access decomposition functionality"""
 
-    def __init__(self, n_actions: List[int], save_load: bool = True, path: str = None):
+    def __init__(
+        self,
+        n_actions: List[int],
+        save_load: bool = True,
+        path: str = None,
+        flow: bool = False,
+    ):
         """initialize game class
 
         Args:
             n_actions (List[int]): list with number of actions for each player
             save_load (bool, optional): save/load computed structure to save time. Defaults to True.
             path (str): path where structure is saved
+            flow (bool, optional): Compute decomposition in flow space. Defaults to False
         """
         self.n_agents = len(n_actions)
         self.agents = list(range(self.n_agents))
         self.n_actions = n_actions
         self.actions = list(range(self.n_agents))
-        self.structure = Structure(self.n_actions, save_load=save_load, path=path)
+        self.flow = flow
+
+        self.structure = Structure(
+            self.n_actions, flow_only=flow, save_load=save_load, path=path
+        )
         self.decomposition_computed = False
 
     def __repr__(self) -> str:
