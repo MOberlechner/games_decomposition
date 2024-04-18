@@ -74,18 +74,18 @@ class Structure:
         if self.flow_only:
             self.relevant_matrices = [
                 "pwc_matrix",
-                "exact_projection",
                 "coboundary_0_matrix",
                 "coboundary_0_matrix_pinv",
+                # "exact_projection", the largest matrix (expensive to store), can be computed by simple matrix multiplication
             ]
         else:
             self.relevant_matrices = [
                 "pwc_matrix",
-                "normalization_projection",
-                "exact_projection",
                 "pwc_matrix_pinv",
                 "coboundary_0_matrix",
                 "coboundary_0_matrix_pinv",
+                # "exact_projection", the largest matrix (expensive to store), can be computed by simple matrix multiplication
+                # "normalization_projection", similar argument
             ]
 
         # create game (optional: save/load computed game)
@@ -97,13 +97,11 @@ class Structure:
                 self.save_structure()
         else:
             self.create_structure()
+        self.compute_projections()
 
-    def create_structure(self, flow_only: bool = False):
+    def create_structure(self):
         """Create structure, i.e., matrices that depend only on the number of agents and actions,
         and not on the payoffs
-
-        Args:
-            flow_only (bool, optional): For the flow decomposition we only need the pwc matrix. Defaults to False.
         """
         # List of Player instances
         self.players = []
@@ -117,11 +115,9 @@ class Structure:
         self.num_payoffs = self.num_strategy_profiles * self.num_players
 
         # Curly_A set, that is set of strategies profiles, of cardinality A
-        # e.g. for 2x2 game it looks like [(1,1), (1,2), (2,1), (2,2)]
         self.strategy_profiles = list(
             itertools.product(*[p.strategies for p in self.players])
         )
-
         self.payoff_basis = self.get_payoff_basis()
 
         # Make Response Graph
@@ -141,21 +137,25 @@ class Structure:
         # pinv(δ_0): C^1 --> C^0
         self.coboundary_0_matrix_pinv = npla.pinv(self.coboundary_0_matrix)
 
+        # Moore-Penrose pseudo-inverse of pwc
+        if self.flow_only:
+            self.pwc_matrix_pinv = npla.pinv(self.pwc_matrix)
+
+    def compute_projections(self):
+        """Compute 'cheaper' objects (only matrix multiplications)"""
+
         # e: C1 --> C1 projection onto exact
         self.exact_projection = np.matmul(
             self.coboundary_0_matrix, self.coboundary_0_matrix_pinv
         )
 
-        if not flow_only:
-            # Moore-Penrose pseudo-inverse of pwc
-            self.pwc_matrix_pinv = npla.pinv(self.pwc_matrix)
-
-            # PI: C0N --> C0N projection onto Euclidean orthogonal complement of ker(δ_0^N)
+        # PI: C0N --> C0N projection onto Euclidean orthogonal complement of ker(δ_0^N)
+        if self.flow_only:
             self.normalization_projection = np.matmul(
                 self.pwc_matrix_pinv, self.pwc_matrix
             )
 
-            self.potential = np.matmul(self.coboundary_0_matrix_pinv, self.pwc_matrix)
+        # self.potential = np.matmul(self.coboundary_0_matrix_pinv, self.pwc_matrix)
 
     def get_payoff_basis(self):
         """create basis of (C^0)^N of cardinality AN, i.e. basis of vector space of payoffs
