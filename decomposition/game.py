@@ -15,7 +15,7 @@ class Game:
         n_actions: List[int],
         save_load: bool = True,
         path: str = None,
-        flow: bool = False,
+        flow_space: bool = False,
     ):
         """initialize game class
 
@@ -23,13 +23,13 @@ class Game:
             n_actions (List[int]): list with number of actions for each player
             save_load (bool, optional): save/load computed structure to save time. Defaults to True.
             path (str): path where structure is saved
-            flow (bool, optional): Compute decomposition in flow space. Defaults to False
+            flow_space (bool, optional): Compute decomposition in flow space. Defaults to False
         """
         self.n_agents = len(n_actions)
         self.agents = list(range(self.n_agents))
         self.n_actions = n_actions
         self.actions = list(range(self.n_agents))
-        self.flow = flow
+        self.flow_space = flow_space
 
         self.structure = Structure(
             self.n_actions, flow_only=flow, save_load=save_load, path=path
@@ -61,6 +61,11 @@ class Game:
         assert len(payoff_vector) == self.n_agents * np.prod(
             self.n_actions
         ), f"expected {self.n_agents * np.prod(self.n_actions)} entries, found {len(payoff_vector)}"
+
+        if self.flow_space:
+            raise ValueError(
+                "flow_space is True: only decomposition in flow space is possible"
+            )
 
         # compute decomposition
         self.payoff = Payoff(self.structure, payoff_vector)
