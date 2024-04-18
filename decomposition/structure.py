@@ -138,7 +138,7 @@ class Structure:
         self.coboundary_0_matrix_pinv = npla.pinv(self.coboundary_0_matrix)
 
         # Moore-Penrose pseudo-inverse of pwc
-        if self.flow_only:
+        if not self.flow_only:
             self.pwc_matrix_pinv = npla.pinv(self.pwc_matrix)
 
     def compute_projections(self):
@@ -150,7 +150,7 @@ class Structure:
         )
 
         # PI: C0N --> C0N projection onto Euclidean orthogonal complement of ker(δ_0^N)
-        if self.flow_only:
+        if not self.flow_only:
             self.normalization_projection = np.matmul(
                 self.pwc_matrix_pinv, self.pwc_matrix
             )
