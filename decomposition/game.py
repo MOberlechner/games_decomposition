@@ -32,7 +32,7 @@ class Game:
         self.flow_space = flow_space
 
         self.structure = Structure(
-            self.n_actions, flow_only=flow, save_load=save_load, path=path
+            self.n_actions, flow_only=flow_space, save_load=save_load, path=path
         )
         self.decomposition_computed = False
 
