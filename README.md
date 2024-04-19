@@ -54,10 +54,18 @@ where $uP$ and $uH$ are the payoff vectors of the potential and harmonic compone
 ```python
 game.metric     # value of metric for potentialness
 ```
-Using the components of the potential and the harmonic components, we can construct a new matrix game with a predefined potentialness by considering a respective convex combination of both components (if they are nonzero). This can be done in the following way
+**Note**: If we are only interested in the potentialness of a game, we can also consider the decomposition of the flow and compute the potentialness of this decomposition instead. It is cheaper than the payoff decomposition and it turns out that the potentialness of the flow decomposition is equal to the potentialness of the payoff decomposition.
+```python
+game.compute_flow_decomposition(payoff_vector)
+game.flow_metric
+```
+Especially for lager settings the runtime improvement is significant (factor 5-50).
+
+Going back to the payoff decomposition: Using the components of the potential and the harmonic components, we can construct a new matrix game with a predefined potentialness by considering a respective convex combination of both components (if they are nonzero). This can be done in the following way
 ```python
 new_payoff_matrices = game.create_game_potentialness(potentialness=0.5)
 ```
+
 You can find this and additional examples also in the [notebooks](./notebooks/).
 
 ## Setup
