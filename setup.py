@@ -14,6 +14,6 @@ def read(fname):
 setup(
     name="games_decomposition",
     version="1.0.0",
-    packages=["decomposition"],
+    packages=["games_decomposition"],
     long_description=read("README.md"),
 )
