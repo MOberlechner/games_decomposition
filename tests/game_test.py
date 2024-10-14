@@ -4,8 +4,8 @@ This module tests the decomposition
 import numpy as np
 import pytest
 
-from decomposition.game import Game
-from decomposition.structure import Structure
+from games_decomposition.game import Game
+from games_decomposition.structure import Structure
 
 
 def test_basics():

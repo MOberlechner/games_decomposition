@@ -2,9 +2,9 @@ from typing import List
 
 import numpy as np
 
-from decomposition.flow import Flow
-from decomposition.payoff import Payoff
-from decomposition.structure import Structure
+from games_decomposition.flow import Flow
+from games_decomposition.payoff import Payoff
+from games_decomposition.structure import Structure
 
 
 class Game:

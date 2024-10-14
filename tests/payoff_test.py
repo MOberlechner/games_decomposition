@@ -4,8 +4,8 @@ This module tests the decomposition
 import numpy as np
 import pytest
 
-from decomposition.payoff import Payoff
-from decomposition.structure import Structure
+from games_decomposition.payoff import Payoff
+from games_decomposition.structure import Structure
 
 settings = [[2, 2], [3, 3], [4, 4], [2, 3], [3, 4], [2, 2, 2], [2, 3, 4], [6, 6]]
 

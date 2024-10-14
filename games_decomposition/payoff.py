@@ -1,6 +1,6 @@
 import numpy as np
 
-from decomposition.structure import Structure
+from games_decomposition.structure import Structure
 
 
 class Payoff:
